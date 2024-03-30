@@ -41,6 +41,10 @@
 </head>
 <body>
   <script>
+
+    // Esto arregla los NetworkImages en la versión web
+    window.flutterWebRenderer = 'html';
+
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({

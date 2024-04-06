@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
+
+import '../../../domain/entities/message.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -15,7 +19,6 @@ class ChatScreen extends StatelessWidget {
           child: CircleAvatar(
             backgroundImage: NetworkImage(
                 "https://i.pinimg.com/originals/11/b8/35/11b835a1d9c67e5a3639fd749c28228d.jpg"),
-
           ),
         ),
         title: const Text('Bebesitaa'),
@@ -31,17 +34,30 @@ class _ChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chatProvider = context.watch<ChatProvider>();
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(children: [
-          Expanded(child: ListView.builder(
-            itemCount: 100,
+          Expanded(
+              child: ListView.builder(
+            itemCount: chatProvider.messageList.length,
             itemBuilder: (context, index) {
-              return ( index % 2 == 0 ) ? const MyMessageBubble() : const HerMessageBubble();
+              final message = chatProvider.messageList[index];
+
+              return (message.owner == FromWho.me)
+                  ? MyMessageBubble(
+                      message: message,
+                    )
+                  : const HerMessageBubble();
             },
           )),
-          const MessageFieldBox(),
+          MessageFieldBox(
+            // Dos maneras distintas de hacerlo
+            // onValue: (String value) => chatProvider.sendMessage(value),
+            onValue: chatProvider.sendMessage,
+          ),
         ]),
       ),
     );

@@ -14,6 +14,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         leading: const Padding(
           padding: EdgeInsets.all(4.0),
           child: CircleAvatar(
@@ -42,16 +43,17 @@ class _ChatView extends StatelessWidget {
         child: Column(children: [
           Expanded(
               child: ListView.builder(
-            itemCount: chatProvider.messageList.length,
-            itemBuilder: (context, index) {
-              final message = chatProvider.messageList[index];
+                controller: chatProvider.chatScrollController,
+              itemCount: chatProvider.messageList.length,
+              itemBuilder: (context, index) {
+                final message = chatProvider.messageList[index];
 
-              return (message.owner == FromWho.me)
-                  ? MyMessageBubble(
-                      message: message,
-                    )
-                  : const HerMessageBubble();
-            },
+                return (message.owner == FromWho.me)
+                    ? MyMessageBubble(
+                        message: message,
+                      )
+                    : const HerMessageBubble();
+              },
           )),
           MessageFieldBox(
             // Dos maneras distintas de hacerlo
